@@ -24,9 +24,10 @@ export interface IMovieCardProps {
 export interface ICompleteMovieCardProps {
     isStored: boolean;
     props: IMovieCardProps;
+    handleMovieDeletion ?: (imdbID: string) => void;
 }
 
-export default function MovieCard({ isStored, props }: ICompleteMovieCardProps) {
+export default function MovieCard({ isStored, props, handleMovieDeletion }: ICompleteMovieCardProps) {
     const addIcon = <AddIcon />;
     const deleteIcon = <DeleteIcon color='red.500' />;
 
@@ -43,6 +44,10 @@ export default function MovieCard({ isStored, props }: ICompleteMovieCardProps) 
             setIsBookmarked(false);
 
             const deletionResult = deleteBookmark(props.imdbID);
+
+            if (deletionResult) {
+                handleMovieDeletion && handleMovieDeletion(props.imdbID);
+            }
 
             message = deletionResult ?
                 'Removed from bookmarks' :

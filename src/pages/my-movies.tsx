@@ -4,9 +4,9 @@ import {useEffect, useState} from 'react';
 import MovieCard, {ICompleteMovieCardProps, IMovieCardProps} from '@/components/cards/movie-card';
 import {getBookmarkedMovies} from '@/lib/localStorage';
 
-export default function Home() {
-    const storageData = getBookmarkedMovies();
+const storageData = getBookmarkedMovies();
 
+export default function Home() {
     const [movies, setMovies] = useState<Array<ICompleteMovieCardProps>>([]);
 
     useEffect(() => {
@@ -19,6 +19,14 @@ export default function Home() {
 
         setMovies(formattedMovies);
     }, []);
+
+    const handleMovieDeletion = (imdbID: string) => {
+        const updatedMovies = movies.filter(
+            (movie: ICompleteMovieCardProps) => movie.props.imdbID !== imdbID
+        );
+
+        setMovies(updatedMovies);
+    }
 
     return (
         <>
@@ -47,7 +55,7 @@ export default function Home() {
                             mt={8}
                         >
                             {movies.map((movie: ICompleteMovieCardProps) => (
-                                <MovieCard {...movie} key={movie.props.imdbID} />
+                                <MovieCard {...movie} handleMovieDeletion={handleMovieDeletion} key={movie.props.imdbID} />
                             ))}
                         </Flex>
                     ) : (
