@@ -1,17 +1,27 @@
 import Head from 'next/head';
-import {Container, Input, FormHelperText, FormControl, Flex, Button} from '@chakra-ui/react';
+import {
+    Container,
+    Input,
+    FormHelperText,
+    FormControl,
+    Flex,
+    Button,
+} from '@chakra-ui/react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { has } from 'lodash';
 import MovieCard, {ICompleteMovieCardProps, IMovieCardProps} from '@/components/cards/movie-card';
 import {getBookmarkedMovies} from '@/lib/localStorage';
+import SimplePagination from '@/components/pagination/simple-pagination';
 
 export default function Home() {
     const [movies, setMovies] = useState<Array<ICompleteMovieCardProps>>([]);
     const storageData = getBookmarkedMovies();
     const [oldSurpriseSuggestion, setOldSurpriseSuggestion] = useState<string>('');
+    const [totalPages, setTotalPages] = useState<number>(0);
+    const [currentTitle, setCurrentTitle] = useState<string>('');
 
-    const searchMovie = async (title: string, isSurprise: boolean = false) => {
+    const searchMovie = async (title: string, isSurprise: boolean = false, page: number = 1) => {
         if (!title) {
             toast.error('Please enter a movie title....');
             return;
@@ -21,9 +31,11 @@ export default function Home() {
             toast.loading('Finding movies....');
         }
 
-        const response = await fetch(`/api/v1/movies/search?title=${title}`);
+        const response = await fetch(`/api/v1/movies/search?title=${title}&page=${page}`);
 
         const { data } = await response.json();
+
+        console.log(data);
 
         toast.dismiss();
 
@@ -43,6 +55,8 @@ export default function Home() {
         });
 
         setMovies(movieInformation);
+        setTotalPages(data.totalResults);
+        setCurrentTitle(title);
 
         toast.success('Movies found....');
     };
@@ -122,6 +136,13 @@ export default function Home() {
                             movies.map((movie: ICompleteMovieCardProps) => <MovieCard {...movie} canBeWatched={false} key={movie.props.imdbID} />)
                         }
                     </Flex>
+
+                    <SimplePagination
+                        handlePageChange={
+                            (currentPage: number) => searchMovie(currentTitle, false, currentPage)
+                        }
+                        totalPages={totalPages}
+                    />
                 </Container>
             </main>
         </>
