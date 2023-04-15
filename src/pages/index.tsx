@@ -1,15 +1,31 @@
 import Head from 'next/head';
-import { Container, Input, FormHelperText, FormControl, SimpleGrid } from '@chakra-ui/react';
+import { Container, Input, FormHelperText, FormControl, Flex } from '@chakra-ui/react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
-import MovieCard from '@/components/movie-card';
-import { useBreakpointValue } from '@chakra-ui/react';
-
-const searchMovie = async (title: string) => {
-    toast.error('Test');
-};
+import MovieCard, {IMovieCardProps} from '@/components/cards/movie-card';
 
 export default function Home() {
-    const cardColumns = useBreakpointValue({ base: 1, md: 2, lg: 5 });
+    const [movies, setMovies] = useState<Array<IMovieCardProps>>([]);
+
+    const searchMovie = async (title: string) => {
+        toast.loading('Finding movies....');
+
+        const response = await fetch(`/api/v1/movies/search?title=${title}`);
+
+        const { data } = await response.json();
+
+        toast.dismiss();
+
+        if (data.Response === 'False') {
+            setMovies([]);
+
+            toast.error('Failed to fetch movies....');
+        }
+
+        setMovies(data.Search as Array<IMovieCardProps>);
+
+        toast.success('Movies found....');
+    };
 
     return (
         <>
@@ -30,32 +46,28 @@ export default function Home() {
                     height="100vh"
                 >
                     <FormControl mt={8}>
-                        <Input variant="filled" placeholder="Search Movie By Title" />
+                        <Input
+                            variant="filled"
+                            placeholder="Search Movie By Title"
+                            onKeyPress={async (e) => {
+                                if (e.key === 'Enter') {
+                                    await searchMovie(e.currentTarget.value);
+                                }
+                            }}
+                        />
                         <FormHelperText textAlign="center">Press Enter to search</FormHelperText>
                     </FormControl>
 
-                    <SimpleGrid columns={cardColumns} spacing={{ base: 4, md: 6 }} mt={8}>
-                        <MovieCard title="Test" description="test" />
-                        <MovieCard title="Test 2" description="test 2" />
-                        <MovieCard title="Test 3" description="test 3" />
-                        <MovieCard title="Test 4" description="test 4" />
-                        <MovieCard title="Test 5" description="test 5" />
-                        <MovieCard title="Test" description="test" />
-                        <MovieCard title="Test 2" description="test 2" />
-                        <MovieCard title="Test 3" description="test 3" />
-                        <MovieCard title="Test 4" description="test 4" />
-                        <MovieCard title="Test 5" description="test 5" />
-                        <MovieCard title="Test" description="test" />
-                        <MovieCard title="Test 2" description="test 2" />
-                        <MovieCard title="Test 3" description="test 3" />
-                        <MovieCard title="Test 4" description="test 4" />
-                        <MovieCard title="Test 5" description="test 5" />
-                        <MovieCard title="Test" description="test" />
-                        <MovieCard title="Test 2" description="test 2" />
-                        <MovieCard title="Test 3" description="test 3" />
-                        <MovieCard title="Test 4" description="test 4" />
-                        <MovieCard title="Test 5" description="test 5" />
-                    </SimpleGrid>
+                    <Flex
+                        flexWrap="wrap"
+                        alignItems="center"
+                        justifyContent={{ base: 'center', md: 'space-between' }}
+                        rowGap={8}
+                    >
+                        {
+                            movies.map((movie: IMovieCardProps) => <MovieCard {...movie} key={movie.imdbID} />)
+                        }
+                    </Flex>
                 </Container>
             </main>
         </>

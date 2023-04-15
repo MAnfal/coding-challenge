@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { Container, SimpleGrid } from '@chakra-ui/react';
 import toast from 'react-hot-toast';
-import MovieCard from '@/components/movie-card';
+import MovieCard from '@/components/cards/movie-card';
 import { useBreakpointValue } from '@chakra-ui/react';
 
 export default function MyMovies() {
