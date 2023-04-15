@@ -26,26 +26,7 @@ export default function MyMovies() {
                     height="100vh"
                 >
                     <SimpleGrid columns={cardColumns} spacing={{ base: 4, md: 6 }} mt={8}>
-                        <MovieCard title="Test" description="test" />
-                        <MovieCard title="Test 2" description="test 2" />
-                        <MovieCard title="Test 3" description="test 3" />
-                        <MovieCard title="Test 4" description="test 4" />
-                        <MovieCard title="Test 5" description="test 5" />
-                        <MovieCard title="Test" description="test" />
-                        <MovieCard title="Test 2" description="test 2" />
-                        <MovieCard title="Test 3" description="test 3" />
-                        <MovieCard title="Test 4" description="test 4" />
-                        <MovieCard title="Test 5" description="test 5" />
-                        <MovieCard title="Test" description="test" />
-                        <MovieCard title="Test 2" description="test 2" />
-                        <MovieCard title="Test 3" description="test 3" />
-                        <MovieCard title="Test 4" description="test 4" />
-                        <MovieCard title="Test 5" description="test 5" />
-                        <MovieCard title="Test" description="test" />
-                        <MovieCard title="Test 2" description="test 2" />
-                        <MovieCard title="Test 3" description="test 3" />
-                        <MovieCard title="Test 4" description="test 4" />
-                        <MovieCard title="Test 5" description="test 5" />
+                        Test
                     </SimpleGrid>
                 </Container>
             </main>
