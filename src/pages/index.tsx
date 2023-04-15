@@ -78,7 +78,7 @@ export default function Home() {
                         mt={8}
                     >
                         {
-                            movies.map((movie: ICompleteMovieCardProps) => <MovieCard {...movie} key={movie.props.imdbID} />)
+                            movies.map((movie: ICompleteMovieCardProps) => <MovieCard {...movie} canBeWatched={false} key={movie.props.imdbID} />)
                         }
                     </Flex>
                 </Container>

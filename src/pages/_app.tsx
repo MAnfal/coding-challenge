@@ -5,7 +5,9 @@ import TopNavigation from '@/components/navigation/top-navigation';
 
 export default function App({ Component, pageProps }: AppProps) {
   return <ChakraProvider>
-    <Toaster />
+    <Toaster
+        position="top-right"
+    />
 
     <TopNavigation></TopNavigation>
 
