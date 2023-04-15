@@ -8,9 +8,10 @@ import {
     Button,
     Image
 } from '@chakra-ui/react'
-import { AddIcon, CheckIcon } from '@chakra-ui/icons'
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import {ReactElement, useState} from 'react';
 import toast from 'react-hot-toast';
+import {deleteBookmark, putBookMarkedMovieInStorage} from '@/lib/localStorage';
 
 export interface IMovieCardProps {
     Poster: string;
@@ -20,23 +21,41 @@ export interface IMovieCardProps {
     imdbID: string,
 }
 
-export default function MovieCard(props: IMovieCardProps) {
+export interface ICompleteMovieCardProps {
+    isStored: boolean;
+    props: IMovieCardProps;
+}
+
+export default function MovieCard({ isStored, props }: ICompleteMovieCardProps) {
+    const addIcon = <AddIcon />;
+    const deleteIcon = <DeleteIcon color='red.500' />;
+
     const [bookmarkIcon, setBookmarkIcon] = useState<ReactElement>(
-        <AddIcon />
+        isStored ? deleteIcon : addIcon
     );
-    const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+    const [isBookmarked, setIsBookmarked] = useState<boolean>(isStored);
 
     const handleClick = () => {
-        let message = '';
+        let message;
 
         if (isBookmarked) {
-            setBookmarkIcon(<AddIcon />);
+            setBookmarkIcon(addIcon);
             setIsBookmarked(false);
-            message = 'Removed from bookmarks';
+
+            const deletionResult = deleteBookmark(props.imdbID);
+
+            message = deletionResult ?
+                'Removed from bookmarks' :
+                'Failed to remove from bookmarks';
         } else {
-            setBookmarkIcon(<CheckIcon color='green.500' />);
+            setBookmarkIcon(deleteIcon);
             setIsBookmarked(true);
-            message = 'Added to bookmarks';
+
+            const storageOperationResult = putBookMarkedMovieInStorage(props);
+
+            message = storageOperationResult ?
+                'Added to bookmarks' :
+                'Failed to add to bookmarks'
         }
 
         toast.success(message);
@@ -58,7 +77,7 @@ export default function MovieCard(props: IMovieCardProps) {
         <Divider />
         <CardFooter>
             <Button flex='1' variant='ghost' leftIcon={bookmarkIcon} onClick={handleClick}>
-                Like
+                {isBookmarked ? 'Remove From Bookmark' : 'Add to Bookmark'}
             </Button>
         </CardFooter>
     </Card>

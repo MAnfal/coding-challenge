@@ -2,10 +2,13 @@ import Head from 'next/head';
 import { Container, Input, FormHelperText, FormControl, Flex } from '@chakra-ui/react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import MovieCard, {IMovieCardProps} from '@/components/cards/movie-card';
+import { has } from 'lodash';
+import MovieCard, {ICompleteMovieCardProps, IMovieCardProps} from '@/components/cards/movie-card';
+import {getBookmarkedMovies} from '@/lib/localStorage';
 
 export default function Home() {
-    const [movies, setMovies] = useState<Array<IMovieCardProps>>([]);
+    const [movies, setMovies] = useState<Array<ICompleteMovieCardProps>>([]);
+    const storageData = getBookmarkedMovies();
 
     const searchMovie = async (title: string) => {
         toast.loading('Finding movies....');
@@ -22,7 +25,16 @@ export default function Home() {
             toast.error('Failed to fetch movies....');
         }
 
-        setMovies(data.Search as Array<IMovieCardProps>);
+        const movieInformation: Array<ICompleteMovieCardProps> = data.Search.map((movie: IMovieCardProps) => {
+            const isStored = has(storageData, movie.imdbID);
+
+            return {
+                isStored,
+                props: movie
+            };
+        });
+
+        setMovies(movieInformation);
 
         toast.success('Movies found....');
     };
@@ -66,7 +78,7 @@ export default function Home() {
                         mt={8}
                     >
                         {
-                            movies.map((movie: IMovieCardProps) => <MovieCard {...movie} key={movie.imdbID} />)
+                            movies.map((movie: ICompleteMovieCardProps) => <MovieCard {...movie} key={movie.props.imdbID} />)
                         }
                     </Flex>
                 </Container>

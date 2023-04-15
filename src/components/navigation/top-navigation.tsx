@@ -40,7 +40,7 @@ const TopNavigation = () => {
 
     const renderMobileMenuItems = () => {
         return Object.keys(menuItems).map((key) => (
-            <Box key={key} cursor="pointer">
+            <Box key={key} cursor="pointer" px={4} py={2}>
                 <Link as={NextLink} href={`${menuItems[key]}`}>
                     <Text>{key}</Text>
                 </Link>
