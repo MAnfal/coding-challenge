@@ -49,7 +49,7 @@ export default function Home() {
                         <Flex
                             flexWrap="wrap"
                             alignItems="center"
-                            justifyContent={{ base: 'center', md: 'flex-start' }}
+                            justifyContent={{ base: 'center' }}
                             rowGap={8}
                             columnGap={8}
                             mt={8}

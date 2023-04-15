@@ -12,6 +12,11 @@ export default function Home() {
     const [oldSurpriseSuggestion, setOldSurpriseSuggestion] = useState<string>('');
 
     const searchMovie = async (title: string, isSurprise: boolean = false) => {
+        if (!title) {
+            toast.error('Please enter a movie title....');
+            return;
+        }
+
         if (!isSurprise) {
             toast.loading('Finding movies....');
         }
@@ -110,7 +115,7 @@ export default function Home() {
                     <Flex
                         flexWrap="wrap"
                         alignItems="center"
-                        justifyContent={{ base: 'center', md: 'flex-start' }}
+                        justifyContent={{ base: 'center' }}
                         rowGap={8}
                         columnGap={8}
                         mt={8}

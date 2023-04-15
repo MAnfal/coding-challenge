@@ -12,8 +12,6 @@ import {
     IconButton,
     Text,
     Modal,
-    ModalOverlay,
-    ModalContent,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
@@ -51,7 +49,15 @@ const TopNavigation = () => {
     const renderMobileMenuItems = () => {
         return Object.keys(menuItems).map((key) => (
             <Box key={key} cursor="pointer" px={4} py={2}>
-                <Link as={NextLink} href={`${menuItems[key]}`} _hover={{ textDecoration: 'none' }}>
+                <Link
+                    as={NextLink}
+                    href={`${menuItems[key]}`}
+                    _hover={{ textDecoration: 'none' }}
+                    onClick={() => {
+                        setIsOpen(false);
+                        setIsActive(menuItems[key]);
+                    }}
+                >
                     <Text>{key}</Text>
                 </Link>
             </Box>
@@ -69,7 +75,7 @@ const TopNavigation = () => {
             </Box>
             <Spacer display={{ base: 'block', md: 'none' }} />
             <Box display={{ base: 'block', md: 'none' }}>
-                <Menu>
+                <Menu isOpen={isOpen} onClose={handleToggle}>
                     <MenuButton
                         as={IconButton}
                         aria-label="Options"
@@ -78,12 +84,9 @@ const TopNavigation = () => {
                         onClick={handleToggle}
                     />
                     <Modal isOpen={isOpen} onClose={handleToggle}>
-                        <ModalOverlay />
-                        <ModalContent>
-                            <MenuList zIndex={10} bg="white">
-                                {renderMobileMenuItems()}
-                            </MenuList>
-                        </ModalContent>
+                        <MenuList zIndex={10} bg="white">
+                            {renderMobileMenuItems()}
+                        </MenuList>
                     </Modal>
                 </Menu>
             </Box>
