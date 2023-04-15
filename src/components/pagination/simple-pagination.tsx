@@ -14,6 +14,10 @@ export default function SimplePagination(props: ISimplePaginationProps) {
 
         setCurrentPage(newPage);
         props.handlePageChange(newPage);
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
     }
 
     return props.totalPages > 0 ? <HStack spacing={4} justifyContent="center" mt={8}>
