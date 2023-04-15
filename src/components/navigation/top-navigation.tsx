@@ -23,6 +23,7 @@ interface IMenuItem {
 
 const TopNavigation = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isActive, setIsActive] = useState('Home');
     const menuItems: IMenuItem = {
         'Home': '/',
         'My Movies': '/my-movies'
@@ -31,7 +32,14 @@ const TopNavigation = () => {
     const renderDesktopMenuItems = () => {
         return Object.keys(menuItems).map((key: string) => (
             <Box key={key} px={4} cursor="pointer">
-                <Link as={NextLink} href={`${menuItems[key]}`}>
+                <Link
+                    as={NextLink}
+                    href={`${menuItems[key]}`}
+                    fontWeight={isActive === key ? 'bold' : 'normal'}
+                    bg={isActive === key ? 'gray.100' : 'transparent'}
+                    _hover={{ textDecoration: 'none' }}
+                    onClick={() => setIsActive(key)}
+                >
                     <Text>{key}</Text>
                 </Link>
             </Box>
@@ -40,8 +48,8 @@ const TopNavigation = () => {
 
     const renderMobileMenuItems = () => {
         return Object.keys(menuItems).map((key) => (
-            <Box key={key} cursor="pointer">
-                <Link as={NextLink} href={`${menuItems[key]}`}>
+            <Box key={key} cursor="pointer" px={4} py={2}>
+                <Link as={NextLink} href={`${menuItems[key]}`} _hover={{ textDecoration: 'none' }}>
                     <Text>{key}</Text>
                 </Link>
             </Box>
