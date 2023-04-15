@@ -5,9 +5,8 @@ import MovieCard, {ICompleteMovieCardProps, IMovieCardProps} from '@/components/
 import {getBookmarkedMovies} from '@/lib/localStorage';
 
 export default function Home() {
-    const storageData = getBookmarkedMovies();
-
     const [movies, setMovies] = useState<Array<ICompleteMovieCardProps>>([]);
+    const [storageData] = useState(getBookmarkedMovies());
 
     useEffect(() => {
         const formattedMovies: Array<ICompleteMovieCardProps> = Object.values(storageData).map((movie: IMovieCardProps) => {
@@ -18,7 +17,15 @@ export default function Home() {
         });
 
         setMovies(formattedMovies);
-    }, []);
+    }, [storageData]);
+
+    const handleMovieDeletionFromUI = (imdbID: string) => {
+        const updatedMovies = movies.filter(
+            (movie: ICompleteMovieCardProps) => movie.props.imdbID !== imdbID
+        );
+
+        setMovies(updatedMovies);
+    }
 
     return (
         <>
@@ -30,7 +37,7 @@ export default function Home() {
             </Head>
             <main>
                 <Container
-                    maxW={{ base: '100%', md: '90%', lg: '80%' }}
+                    maxW={{ base: '100%', md: '90%', lg: '90%' }}
                     px={{ base: 4, md: 0 }}
                     display="flex"
                     flexDirection="column"
@@ -42,12 +49,13 @@ export default function Home() {
                         <Flex
                             flexWrap="wrap"
                             alignItems="center"
-                            justifyContent={{ base: 'center', md: 'space-between' }}
+                            justifyContent={{ base: 'center', md: 'flex-start' }}
                             rowGap={8}
+                            columnGap={8}
                             mt={8}
                         >
                             {movies.map((movie: ICompleteMovieCardProps) => (
-                                <MovieCard {...movie} key={movie.props.imdbID} />
+                                <MovieCard {...movie} handleMovieDeletion={handleMovieDeletionFromUI} key={movie.props.imdbID} />
                             ))}
                         </Flex>
                     ) : (

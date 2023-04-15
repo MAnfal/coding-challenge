@@ -16,14 +16,16 @@ import {
     ModalContent,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/router';
 
 interface IMenuItem {
     [key: string]: string;
 }
 
 const TopNavigation = () => {
+    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
-    const [isActive, setIsActive] = useState('Home');
+    const [isActive, setIsActive] = useState(router.pathname);
     const menuItems: IMenuItem = {
         'Home': '/',
         'My Movies': '/my-movies'
@@ -35,10 +37,10 @@ const TopNavigation = () => {
                 <Link
                     as={NextLink}
                     href={`${menuItems[key]}`}
-                    fontWeight={isActive === key ? 'bold' : 'normal'}
-                    bg={isActive === key ? 'gray.100' : 'transparent'}
+                    fontWeight={isActive === menuItems[key] ? 'bold' : 'normal'}
+                    bg={isActive === menuItems[key] ? 'gray.100' : 'transparent'}
                     _hover={{ textDecoration: 'none' }}
-                    onClick={() => setIsActive(key)}
+                    onClick={() => setIsActive(menuItems[key])}
                 >
                     <Text>{key}</Text>
                 </Link>

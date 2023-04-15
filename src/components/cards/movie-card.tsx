@@ -8,10 +8,11 @@ import {
     Button,
     Image
 } from '@chakra-ui/react'
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
-import {ReactElement, useState} from 'react';
+import { AddIcon, DeleteIcon, ViewIcon, CheckIcon } from '@chakra-ui/icons'
+import {useState} from 'react';
 import toast from 'react-hot-toast';
 import {deleteBookmark, putBookMarkedMovieInStorage} from '@/lib/localStorage';
+import {cloneDeep} from 'lodash';
 
 export interface IMovieCardProps {
     Poster: string;
@@ -19,36 +20,36 @@ export interface IMovieCardProps {
     Type: string,
     Year: string,
     imdbID: string,
+    isWatched: boolean
 }
 
 export interface ICompleteMovieCardProps {
     isStored: boolean;
     props: IMovieCardProps;
+    handleMovieDeletion ?: (imdbID: string) => void;
+    canBeWatched ?: boolean;
 }
 
-export default function MovieCard({ isStored, props }: ICompleteMovieCardProps) {
-    const addIcon = <AddIcon />;
-    const deleteIcon = <DeleteIcon color='red.500' />;
-
-    const [bookmarkIcon, setBookmarkIcon] = useState<ReactElement>(
-        isStored ? deleteIcon : addIcon
-    );
+export default function MovieCard({ isStored, props, handleMovieDeletion, canBeWatched = true }: ICompleteMovieCardProps) {
     const [isBookmarked, setIsBookmarked] = useState<boolean>(isStored);
+    const [isWatched, setIsWatched] = useState<boolean>(props.isWatched);
 
-    const handleClick = () => {
+    const handleBookmarkClick = () => {
         let message;
 
         if (isBookmarked) {
-            setBookmarkIcon(addIcon);
             setIsBookmarked(false);
 
             const deletionResult = deleteBookmark(props.imdbID);
+
+            if (deletionResult) {
+                handleMovieDeletion && handleMovieDeletion(props.imdbID);
+            }
 
             message = deletionResult ?
                 'Removed from bookmarks' :
                 'Failed to remove from bookmarks';
         } else {
-            setBookmarkIcon(deleteIcon);
             setIsBookmarked(true);
 
             const storageOperationResult = putBookMarkedMovieInStorage(props);
@@ -61,6 +62,42 @@ export default function MovieCard({ isStored, props }: ICompleteMovieCardProps) 
         toast.success(message);
     };
 
+    const handleWatchStatusClick = () => {
+        if (isWatched) {
+            // We do not want to remove the watch status. By choice.
+            toast.error('You cannot remove the watch status');
+            return;
+        }
+
+        const clonedProps = cloneDeep(props);
+
+        clonedProps.isWatched = true;
+
+        const storageResult = putBookMarkedMovieInStorage(clonedProps);
+
+        if (storageResult) {
+            setIsWatched(true);
+
+            toast.success('Added to watched list');
+        } else {
+            toast.error('Failed to add to watched list');
+        }
+    }
+
+    const getWatchButton = () => {
+        if (!canBeWatched) {
+            return <></>;
+        }
+
+        return <Button
+            flex='1'
+            variant='ghost'
+            leftIcon={isWatched ? <CheckIcon color='green.500' /> : <ViewIcon /> }
+            onClick={handleWatchStatusClick}
+        >
+            { isWatched ? 'Watched' : 'Watching' }
+        </Button>;
+    }
 
     return <Card maxW='xs' variant='outline'>
         <CardHeader>
@@ -72,13 +109,17 @@ export default function MovieCard({ isStored, props }: ICompleteMovieCardProps) 
                 src={props.Poster}
                 alt={props.Title}
                 borderRadius='lg'
+                maxH='400px'
+                objectFit='cover'
+                objectPosition='center'
             />
         </CardBody>
         <Divider />
         <CardFooter>
-            <Button flex='1' variant='ghost' leftIcon={bookmarkIcon} onClick={handleClick}>
-                {isBookmarked ? 'Remove From Bookmark' : 'Add to Bookmark'}
+            <Button flex='1' variant='ghost' leftIcon={isBookmarked ? <DeleteIcon color='red.500' /> : <AddIcon />} onClick={handleBookmarkClick}>
+                {isBookmarked ? 'Remove' : 'Bookmark'}
             </Button>
+            { getWatchButton() }
         </CardFooter>
     </Card>
 }

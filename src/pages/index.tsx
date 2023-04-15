@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { Container, Input, FormHelperText, FormControl, Flex } from '@chakra-ui/react';
+import {Container, Input, FormHelperText, FormControl, Flex, Button} from '@chakra-ui/react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { has } from 'lodash';
@@ -49,7 +49,7 @@ export default function Home() {
             </Head>
             <main>
                 <Container
-                    maxW={{ base: '100%', md: '90%', lg: '80%' }}
+                    maxW={{ base: '100%', md: '90%', lg: '90%' }}
                     px={{ base: 4, md: 0 }}
                     display="flex"
                     flexDirection="column"
@@ -58,27 +58,43 @@ export default function Home() {
                     height="100vh"
                 >
                     <FormControl mt={8}>
-                        <Input
-                            variant="filled"
-                            placeholder="Search Movie By Title"
-                            onKeyPress={async (e) => {
-                                if (e.key === 'Enter') {
-                                    await searchMovie(e.currentTarget.value);
-                                }
-                            }}
-                        />
+                        <Container
+                            maxW={{ base: '100%', md: '90%', lg: '80%' }}
+                            px={{ base: 4, md: 0 }}
+                            display="flex"
+                            width="100%"
+                        >
+                            <Input
+                                variant="filled"
+                                placeholder="Search Movie By Title Or Just click on Surprise Me Button -->"
+                                onKeyPress={async (e) => {
+                                    if (e.key === 'Enter') {
+                                        await searchMovie(e.currentTarget.value);
+                                    }
+                                }}
+                            />
+                            <Button
+                                ml={2}
+                                pl={6}
+                                pr={6}
+                                colorScheme="blue"
+                            >
+                                Surprise Me
+                            </Button>
+                        </Container>
                         <FormHelperText textAlign="center">Press Enter to search</FormHelperText>
                     </FormControl>
 
                     <Flex
                         flexWrap="wrap"
                         alignItems="center"
-                        justifyContent={{ base: 'center', md: 'space-between' }}
+                        justifyContent={{ base: 'center', md: 'flex-start' }}
                         rowGap={8}
+                        columnGap={8}
                         mt={8}
                     >
                         {
-                            movies.map((movie: ICompleteMovieCardProps) => <MovieCard {...movie} key={movie.props.imdbID} />)
+                            movies.map((movie: ICompleteMovieCardProps) => <MovieCard {...movie} canBeWatched={false} key={movie.props.imdbID} />)
                         }
                     </Flex>
                 </Container>
