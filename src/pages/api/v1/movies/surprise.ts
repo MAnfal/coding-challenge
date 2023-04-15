@@ -40,7 +40,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         return res.status(200).json({ success: true, movieRecommendation });
     } catch (exception) {
-        console.log(exception)
         return res.status(503).json({ success: false });
     }
 }

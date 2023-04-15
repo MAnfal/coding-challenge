@@ -59,8 +59,6 @@ export default function Home() {
 
             setOldSurpriseSuggestion(movieRecommendation);
 
-            console.log(movieRecommendation);
-
             await searchMovie(movieRecommendation, true);
         }
     }
