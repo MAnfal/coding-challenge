@@ -66,8 +66,8 @@ export default function Home() {
     return (
         <>
             <Head>
-                <title>Coding Assignment</title>
-                <meta name="description" content="Coding Assignment" />
+                <title>CineMate</title>
+                <meta name="description" content="CineMate" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
