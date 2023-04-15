@@ -6,7 +6,7 @@ import {getBookmarkedMovies} from '@/lib/localStorage';
 
 export default function Home() {
     const [movies, setMovies] = useState<Array<ICompleteMovieCardProps>>([]);
-    const [storageData, setStorageData] = useState(getBookmarkedMovies());
+    const [storageData] = useState(getBookmarkedMovies());
 
     useEffect(() => {
         const formattedMovies: Array<ICompleteMovieCardProps> = Object.values(storageData).map((movie: IMovieCardProps) => {
@@ -37,7 +37,7 @@ export default function Home() {
             </Head>
             <main>
                 <Container
-                    maxW={{ base: '100%', md: '90%', lg: '80%' }}
+                    maxW={{ base: '100%', md: '90%', lg: '90%' }}
                     px={{ base: 4, md: 0 }}
                     display="flex"
                     flexDirection="column"
@@ -49,8 +49,9 @@ export default function Home() {
                         <Flex
                             flexWrap="wrap"
                             alignItems="center"
-                            justifyContent={{ base: 'center', md: 'space-between' }}
+                            justifyContent={{ base: 'center', md: 'flex-start' }}
                             rowGap={8}
+                            columnGap={8}
                             mt={8}
                         >
                             {movies.map((movie: ICompleteMovieCardProps) => (
