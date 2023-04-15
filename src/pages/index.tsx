@@ -1,4 +1,10 @@
 import Head from 'next/head'
+import {Container, Input} from '@chakra-ui/react';
+import toast from 'react-hot-toast';
+
+const searchMovie = async (title: string) => {
+    toast.error('Test');
+}
 
 export default function Home() {
   return (
@@ -10,7 +16,18 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        Test
+          <Container
+              display="flex"
+              flexDirection="column"
+              justifyContent="top"
+              width="100vw"
+              height="100vh"
+          >
+              <Input
+                  variant='filled'
+                  placeholder='Search Movie By Title'
+              ></Input>
+          </Container>
       </main>
     </>
   )
