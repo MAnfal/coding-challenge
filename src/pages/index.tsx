@@ -63,6 +63,7 @@ export default function Home() {
                         alignItems="center"
                         justifyContent={{ base: 'center', md: 'space-between' }}
                         rowGap={8}
+                        mt={8}
                     >
                         {
                             movies.map((movie: IMovieCardProps) => <MovieCard {...movie} key={movie.imdbID} />)
