@@ -28,8 +28,9 @@ export default async function handler(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const movieTitle = searchParams.get('title');
+    const pageNumber = searchParams.get('page');
 
-    if (!movieTitle) {
+    if (!movieTitle || !pageNumber) {
         return prepareResponse(
             { success: false, message: 'Movie title is required' },
             400
@@ -38,7 +39,7 @@ export default async function handler(req: NextRequest) {
 
     try {
         const response = await fetch(
-            `https://${process.env.RAPID_API_HOST}?s=${movieTitle}&r=json&page=1`,
+            `https://${process.env.RAPID_API_HOST}?s=${movieTitle}&r=json&page=${pageNumber}`,
             {
                 method: 'GET',
                 headers: {
