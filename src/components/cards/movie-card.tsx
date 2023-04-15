@@ -106,7 +106,7 @@ export default function MovieCard({ isStored, props, handleMovieDeletion, canBeW
 
         <CardBody>
             <Image
-                src={props.Poster}
+                src={props.Poster.toLowerCase() === 'n/a' ? 'https://cdn.anfalmushtaq.com/static/imgs/default-movie-poster.png' : props.Poster}
                 alt={props.Title}
                 borderRadius='lg'
                 maxH='400px'

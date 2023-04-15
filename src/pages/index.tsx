@@ -9,9 +9,12 @@ import {getBookmarkedMovies} from '@/lib/localStorage';
 export default function Home() {
     const [movies, setMovies] = useState<Array<ICompleteMovieCardProps>>([]);
     const storageData = getBookmarkedMovies();
+    const [oldSurpriseSuggestion, setOldSurpriseSuggestion] = useState<string>('');
 
-    const searchMovie = async (title: string) => {
-        toast.loading('Finding movies....');
+    const searchMovie = async (title: string, isSurprise: boolean = false) => {
+        if (!isSurprise) {
+            toast.loading('Finding movies....');
+        }
 
         const response = await fetch(`/api/v1/movies/search?title=${title}`);
 
@@ -19,7 +22,7 @@ export default function Home() {
 
         toast.dismiss();
 
-        if (data.Response === 'False') {
+        if (data.Response === 'False' || !data.Search) {
             setMovies([]);
 
             toast.error('Failed to fetch movies....');
@@ -38,6 +41,24 @@ export default function Home() {
 
         toast.success('Movies found....');
     };
+
+    const onSurpriseMeClick = async () => {
+        toast.loading('Finding movies....');
+
+        const response = await fetch(`/api/v1/movies/surprise${oldSurpriseSuggestion ? '?oldSuggestion='+oldSurpriseSuggestion : ''}`);
+
+        const data = await response.json();
+
+        if (data?.success) {
+            const movieRecommendation = data.movieRecommendation;
+
+            setOldSurpriseSuggestion(movieRecommendation);
+
+            console.log(movieRecommendation);
+
+            await searchMovie(movieRecommendation, true);
+        }
+    }
 
     return (
         <>
@@ -78,6 +99,7 @@ export default function Home() {
                                 pl={6}
                                 pr={6}
                                 colorScheme="blue"
+                                onClick={onSurpriseMeClick}
                             >
                                 Surprise Me
                             </Button>
