@@ -22,6 +22,10 @@ const prepareResponse=  (data: any, statusCode?: number|null, headers?: IHeaders
 }
 
 export default async function handler(req: NextRequest) {
+    if (req.method.toLowerCase() !== 'get') {
+        return prepareResponse({ message: 'Method not allowed' }, 405);
+    }
+
     const { searchParams } = new URL(req.url);
     const movieTitle = searchParams.get('title');
 
@@ -48,8 +52,6 @@ export default async function handler(req: NextRequest) {
 
         return prepareResponse({ success: true, data });
     } catch (exception) {
-
-        console.log(exception);
         return prepareResponse({ success: false }, 503)
     }
 }
